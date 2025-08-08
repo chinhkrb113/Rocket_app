@@ -62,6 +62,44 @@ Email: hr@techcorp.com
 Password: enterprise123
 Role: enterprise
 Công ty: TechCorp Vietnam
+Lĩnh vực: Công nghệ thông tin
+Quy mô: 200-500 nhân viên
+```
+
+```
+Email: training@fptsoft.com
+Password: enterprise123
+Role: enterprise
+Công ty: FPT Software
+Lĩnh vực: Phát triển phần mềm
+Quy mô: 1000+ nhân viên
+```
+
+```
+Email: hr@vietcombank.com
+Password: enterprise123
+Role: enterprise
+Công ty: Vietcombank
+Lĩnh vực: Ngân hàng - Tài chính
+Quy mô: 500-1000 nhân viên
+```
+
+```
+Email: learning@vingroup.net
+Password: enterprise123
+Role: enterprise
+Công ty: Vingroup
+Lĩnh vực: Tập đoàn đa ngành
+Quy mô: 5000+ nhân viên
+```
+
+```
+Email: dev@startup.io
+Password: enterprise123
+Role: enterprise
+Công ty: Tech Startup
+Lĩnh vực: Fintech
+Quy mô: 50-100 nhân viên
 ```
 
 ## 📊 Dữ Liệu Mẫu
@@ -90,6 +128,28 @@ Công ty: TechCorp Vietnam
 - Tổng số giảng viên: 8
 - Doanh thu: 2.45 tỷ VND
 - Tăng trưởng hàng tháng: 12.5% (học viên), 15.7% (doanh thu)
+
+### 🏢 Dữ Liệu Mẫu Doanh Nghiệp
+
+#### Chương Trình Đào Tạo Doanh Nghiệp
+- **TechCorp Frontend Bootcamp** - 15 học viên - React.js & UI/UX (8 tuần)
+- **FPT Software Backend Training** - 25 học viên - Node.js & DevOps (10 tuần)
+- **Vietcombank Digital Transformation** - 30 học viên - Python & Data Analytics (12 tuần)
+- **Vingroup Mobile Development** - 20 học viên - Flutter & React Native (6 tuần)
+- **Startup Tech Stack** - 8 học viên - Full-stack Development (16 tuần)
+
+#### Dự Án Thực Tế
+- **E-commerce Platform** (TechCorp) - 8 developers - 85% hoàn thành
+- **Banking Mobile App** (Vietcombank) - 12 developers - 92% hoàn thành
+- **IoT Management System** (Vingroup) - 15 developers - 67% hoàn thành
+- **Fintech Dashboard** (Tech Startup) - 5 developers - 78% hoàn thành
+
+#### Thống Kê Doanh Nghiệp
+- **TechCorp Vietnam**: 45 nhân viên đã đào tạo, 89% hoàn thành
+- **FPT Software**: 78 nhân viên đã đào tạo, 94% hoàn thành
+- **Vietcombank**: 62 nhân viên đã đào tạo, 87% hoàn thành
+- **Vingroup**: 95 nhân viên đã đào tạo, 91% hoàn thành
+- **Tech Startup**: 23 nhân viên đã đào tạo, 96% hoàn thành
 
 ## 🚀 Cách Sử Dụng
 
@@ -148,9 +208,22 @@ const LoginPage = () => {
 
 ### Kịch Bản 4: Doanh Nghiệp
 1. Đăng nhập với tài khoản enterprise
-2. Đăng ký khóa học cho nhân viên
-3. Theo dõi tiến độ học tập của team
-4. Quản lý ngân sách đào tạo
+2. **Bước 1 - Chọn nhân viên/học viên phù hợp:**
+   - Xem danh sách tất cả học viên có sẵn
+   - Lọc theo kỹ năng (React, Node.js, Python, etc.)
+   - Lọc theo trình độ (Beginner, Intermediate, Advanced)
+   - Tìm kiếm theo tên hoặc email
+   - Chọn nhiều học viên cho chương trình đào tạo
+3. **Bước 2 - Giám sát tiến độ đào tạo/dự án:**
+   - Tạo chương trình đào tạo mới cho nhóm được chọn
+   - Theo dõi tiến độ học tập của từng thành viên
+   - Xem thống kê hoàn thành và hiệu suất
+   - Quản lý timeline và milestone
+4. **Bước 3 - Đánh giá kết quả:**
+   - Xem kết quả chi tiết của từng học viên
+   - Đánh giá với điểm số và nhận xét
+   - Xuất báo cáo đánh giá tổng thể
+   - Quyết định về việc tuyển dụng hoặc thăng tiến
 
 ## 🔧 Tùy Chỉnh Dữ Liệu
 
