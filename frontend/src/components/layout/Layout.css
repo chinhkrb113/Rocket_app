@@ -1,0 +1,136 @@
+/* Layout Container */
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f8fafc;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Main Content */
+.main-content {
+  margin-top: 64px;
+  transition: all 0.3s ease;
+  min-height: calc(100vh - 64px);
+}
+
+.main-with-sidebar {
+  margin-left: 280px;
+}
+
+.main-sidebar-collapsed {
+  margin-left: 72px;
+}
+
+.main-full {
+  margin-left: 0;
+}
+
+.content-wrapper {
+  padding: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.sidebar-overlay {
+  display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .header-center {
+    max-width: 300px;
+    margin: 0 16px;
+  }
+  
+  .main-content {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar-toggle {
+    display: block;
+  }
+  
+  .layout-sidebar {
+    transform: translateX(-100%);
+    width: 280px;
+  }
+  
+  .layout-sidebar:not(.collapsed) {
+    transform: translateX(0);
+  }
+  
+  .layout-main {
+    margin-left: 0;
+  }
+  
+  .layout-main.sidebar-collapsed {
+    margin-left: 0;
+  }
+  
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    width: 100vw;
+    height: calc(100vh - 64px);
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+  }
+  
+  .header-center {
+    display: none;
+  }
+  
+  .user-details {
+    display: none;
+  }
+  
+  .main-content {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .layout-header {
+    padding: 0 16px;
+  }
+  
+  .logo-text {
+    display: none;
+  }
+  
+  .logout-btn span:last-child {
+    display: none;
+  }
+}
+
+/* Smooth animations */
+* {
+  box-sizing: border-box;
+}
+
+.layout * {
+  transition: color 0.2s, background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Custom scrollbar */
+.sidebar-nav::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 2px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+}

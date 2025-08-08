@@ -1,0 +1,356 @@
+/* Dashboard Page Styles */
+.dashboard-page {
+    padding: 24px;
+    background-color: #f8fafc;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+/* Header */
+.dashboard-header {
+    margin-bottom: 32px;
+}
+
+.dashboard-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin: 0 0 8px 0;
+    line-height: 1.2;
+}
+
+.dashboard-subtitle {
+    font-size: 1.125rem;
+    color: #718096;
+    margin: 0;
+    font-weight: 400;
+}
+
+/* Loading State */
+.dashboard-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    text-align: center;
+}
+
+.loading-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #e2e8f0;
+    border-top: 4px solid #3182ce;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.dashboard-loading p {
+    color: #718096;
+    font-size: 1.125rem;
+    margin: 0;
+}
+
+/* Error State */
+.dashboard-error {
+    text-align: center;
+    padding: 48px 24px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.dashboard-error h2 {
+    color: #e53e3e;
+    font-size: 1.5rem;
+    margin: 0 0 16px 0;
+}
+
+.dashboard-error p {
+    color: #718096;
+    margin: 0 0 24px 0;
+    font-size: 1rem;
+}
+
+.retry-button {
+    background: #3182ce;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.retry-button:hover {
+    background: #2c5aa0;
+}
+
+/* Metrics Row */
+.metrics-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+/* Dashboard Content */
+.dashboard-content {
+    display: grid;
+    gap: 32px;
+    margin-bottom: 40px;
+}
+
+.dashboard-section {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.section-header {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.section-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1a202c;
+    margin: 0 0 8px 0;
+}
+
+.section-subtitle {
+    font-size: 0.875rem;
+    color: #718096;
+    margin: 0;
+}
+
+/* Quick Actions */
+.quick-actions {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.quick-actions h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a202c;
+    margin: 0 0 20px 0;
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.action-button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    background: white;
+    border: 1px solid #e2e8f0;
+}
+
+.action-button.primary {
+    background: #3182ce;
+    color: white;
+    border-color: #3182ce;
+}
+
+.action-button.primary:hover {
+    background: #2c5aa0;
+    border-color: #2c5aa0;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3);
+}
+
+.action-button.secondary {
+    background: white;
+    color: #4a5568;
+    border-color: #e2e8f0;
+}
+
+.action-button.secondary:hover {
+    background: #f7fafc;
+    border-color: #cbd5e0;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.action-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-page {
+        padding: 16px;
+    }
+    
+    .dashboard-header h1 {
+        font-size: 2rem;
+    }
+    
+    .metrics-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    
+    .dashboard-content {
+        gap: 24px;
+        margin-bottom: 24px;
+    }
+    
+    .dashboard-section {
+        padding: 16px;
+    }
+    
+    .actions-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .action-button {
+        padding: 14px 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-page {
+        padding: 12px;
+    }
+    
+    .dashboard-header h1 {
+        font-size: 1.75rem;
+    }
+    
+    .dashboard-subtitle {
+        font-size: 1rem;
+    }
+    
+    .section-header h2 {
+        font-size: 1.25rem;
+    }
+    
+    .dashboard-section {
+        padding: 12px;
+    }
+    
+    .quick-actions {
+        padding: 16px;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .dashboard-page {
+        background-color: #1a202c;
+        color: #e2e8f0;
+    }
+    
+    .dashboard-header h1 {
+        color: #f7fafc;
+    }
+    
+    .dashboard-subtitle {
+        color: #a0aec0;
+    }
+    
+    .dashboard-section,
+    .quick-actions {
+        background: #2d3748;
+        border-color: #4a5568;
+    }
+    
+    .section-header {
+        border-color: #4a5568;
+    }
+    
+    .section-header h2,
+    .quick-actions h3 {
+        color: #f7fafc;
+    }
+    
+    .section-subtitle {
+        color: #a0aec0;
+    }
+    
+    .action-button.secondary {
+        background: #2d3748;
+        color: #e2e8f0;
+        border-color: #4a5568;
+    }
+    
+    .action-button.secondary:hover {
+        background: #4a5568;
+        border-color: #718096;
+    }
+    
+    .dashboard-error {
+        background: #2d3748;
+        border-color: #4a5568;
+    }
+    
+    .dashboard-loading p {
+        color: #a0aec0;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .dashboard-section,
+    .quick-actions {
+        border-width: 2px;
+    }
+    
+    .action-button {
+        border-width: 2px;
+    }
+    
+    .action-button:focus {
+        outline: 3px solid #3182ce;
+        outline-offset: 2px;
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .loading-spinner {
+        animation: none;
+    }
+    
+    .action-button {
+        transition: none;
+    }
+    
+    .action-button:hover {
+        transform: none;
+    }
+}
