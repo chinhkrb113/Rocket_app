@@ -1,4 +1,4 @@
-import { authApi, apiRequest, ApiResponse } from './config';
+import { mainApi, ApiResponse } from './config';
 import { User } from '../store/slices/authSlice';
 
 // Login interfaces
@@ -69,124 +69,86 @@ export interface ResendVerificationData {
 // Auth API functions
 export const authApiService = {
   // Login user
-  login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
-    return apiRequest(() => 
-      authApi.post<ApiResponse<LoginResponse>>(AUTH_ENDPOINTS.LOGIN, credentials)
-    );
+  login: async (credentials: LoginCredentials): Promise<ApiResponse<LoginResponse>> => {
+    const response = await mainApi.post(AUTH_ENDPOINTS.LOGIN, credentials);
+    return response.data;
   },
 
   // Register user
-  register: async (userData: RegisterData): Promise<{ user: User; message: string }> => {
-    return apiRequest(() => 
-      authApi.post<ApiResponse<{ user: User; message: string }>>(
-        AUTH_ENDPOINTS.REGISTER, 
-        userData
-      )
-    );
+  register: async (userData: RegisterData): Promise<ApiResponse<{ user: User; message: string }>> => {
+    const response = await mainApi.post(AUTH_ENDPOINTS.REGISTER, userData);
+    return response.data;
   },
 
   // Logout user
-  logout: async (): Promise<{ message: string }> => {
-    return apiRequest(() => 
-      authApi.post<ApiResponse<{ message: string }>>(AUTH_ENDPOINTS.LOGOUT)
-    );
+  logout: async (): Promise<ApiResponse<{ message: string }>> => {
+    const response = await mainApi.post(AUTH_ENDPOINTS.LOGOUT);
+    return response.data;
   },
 
   // Refresh token
-  refreshToken: async (refreshToken: string): Promise<{
+  refreshToken: async (refreshToken: string): Promise<ApiResponse<{
     token: string;
     refresh_token: string;
     expires_in: number;
-  }> => {
-    return apiRequest(() => 
-      authApi.post<ApiResponse<{
-        token: string;
-        refresh_token: string;
-        expires_in: number;
-      }>>(AUTH_ENDPOINTS.REFRESH_TOKEN, { refresh_token: refreshToken })
-    );
+  }>> => {
+    const response = await mainApi.post(AUTH_ENDPOINTS.REFRESH_TOKEN, { refresh_token: refreshToken });
+    return response.data;
   },
 
   // Get current user
-  getCurrentUser: async (): Promise<{ user: User }> => {
-    return apiRequest(() => 
-      authApi.get<ApiResponse<{ user: User }>>(AUTH_ENDPOINTS.ME)
-    );
+  getCurrentUser: async (): Promise<ApiResponse<{ user: User }>> => {
+    const response = await mainApi.get(AUTH_ENDPOINTS.ME);
+    return response.data;
   },
 
   // Forgot password
-  forgotPassword: async (data: ForgotPasswordData): Promise<{ message: string }> => {
-    return apiRequest(() => 
-      authApi.post<ApiResponse<{ message: string }>>(
-        AUTH_ENDPOINTS.FORGOT_PASSWORD, 
-        data
-      )
-    );
+  forgotPassword: async (data: ForgotPasswordData): Promise<ApiResponse<{ message: string }>> => {
+    const response = await mainApi.post(AUTH_ENDPOINTS.FORGOT_PASSWORD, data);
+    return response.data;
   },
 
   // Reset password
-  resetPassword: async (data: ResetPasswordData): Promise<{ message: string }> => {
-    return apiRequest(() => 
-      authApi.post<ApiResponse<{ message: string }>>(
-        AUTH_ENDPOINTS.RESET_PASSWORD, 
-        data
-      )
-    );
+  resetPassword: async (data: ResetPasswordData): Promise<ApiResponse<{ message: string }>> => {
+    const response = await mainApi.post(AUTH_ENDPOINTS.RESET_PASSWORD, data);
+    return response.data;
   },
 
   // Change password
-  changePassword: async (data: ChangePasswordData): Promise<{ message: string }> => {
-    return apiRequest(() => 
-      authApi.put<ApiResponse<{ message: string }>>(
-        AUTH_ENDPOINTS.CHANGE_PASSWORD, 
-        data
-      )
-    );
+  changePassword: async (data: ChangePasswordData): Promise<ApiResponse<{ message: string }>> => {
+    const response = await mainApi.put(AUTH_ENDPOINTS.CHANGE_PASSWORD, data);
+    return response.data;
   },
 
   // Verify email
-  verifyEmail: async (data: VerifyEmailData): Promise<{ message: string }> => {
-    return apiRequest(() => 
-      authApi.post<ApiResponse<{ message: string }>>(
-        AUTH_ENDPOINTS.VERIFY_EMAIL, 
-        data
-      )
-    );
+  verifyEmail: async (data: VerifyEmailData): Promise<ApiResponse<{ message: string }>> => {
+    const response = await mainApi.post(AUTH_ENDPOINTS.VERIFY_EMAIL, data);
+    return response.data;
   },
 
   // Resend email verification
-  resendVerification: async (data: ResendVerificationData): Promise<{ message: string }> => {
-    return apiRequest(() => 
-      authApi.post<ApiResponse<{ message: string }>>(
-        AUTH_ENDPOINTS.RESEND_VERIFICATION, 
-        data
-      )
-    );
+  resendVerification: async (data: ResendVerificationData): Promise<ApiResponse<{ message: string }>> => {
+    const response = await mainApi.post(AUTH_ENDPOINTS.RESEND_VERIFICATION, data);
+    return response.data;
   },
 
   // Update user profile
-  updateProfile: async (userData: Partial<User>): Promise<{ user: User }> => {
-    return apiRequest(() => 
-      authApi.put<ApiResponse<{ user: User }>>('/api/auth/profile', userData)
-    );
+  updateProfile: async (userData: Partial<User>): Promise<ApiResponse<{ user: User }>> => {
+    const response = await mainApi.put('/api/auth/profile', userData);
+    return response.data;
   },
 
   // Upload avatar
-  uploadAvatar: async (file: File): Promise<{ user: User; avatar_url: string }> => {
+  uploadAvatar: async (file: File): Promise<ApiResponse<{ user: User; avatar_url: string }>> => {
     const formData = new FormData();
     formData.append('avatar', file);
     
-    return apiRequest(() => 
-      authApi.post<ApiResponse<{ user: User; avatar_url: string }>>(
-        '/api/auth/upload-avatar', 
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      )
-    );
+    const response = await mainApi.post('/api/auth/upload-avatar', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
   },
 };
 

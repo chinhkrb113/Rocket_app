@@ -17,6 +17,7 @@ import StudentsPage from './pages/StudentsPage';
 import ProfilePage from './pages/ProfilePage';
 import EnterprisePage from './pages/EnterprisePage';
 import NotFoundPage from './pages/NotFoundPage';
+import ApiTestDemo from './components/ApiTestDemo';
 
 
 
@@ -94,6 +95,17 @@ const AppContent: React.FC = () => {
             element={
               <ProtectedRoute>
                 {user && <EnterprisePage currentUser={user} />}
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route 
+            path="/api-test" 
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <ApiTestDemo />
+                </Layout>
               </ProtectedRoute>
             } 
           />

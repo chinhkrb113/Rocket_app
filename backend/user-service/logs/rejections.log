@@ -1,0 +1,149 @@
+{
+  error: Error: Unknown database 'rocket_training_system'
+      at Packet.asError (D:\trae\my_rocket_global_app\backend\user-service\node_modules\mysql2\lib\packets\packet.js:740:17)
+      at ClientHandshake.execute (D:\trae\my_rocket_global_app\backend\user-service\node_modules\mysql2\lib\commands\command.js:29:26)
+      at PoolConnection.handlePacket (D:\trae\my_rocket_global_app\backend\user-service\node_modules\mysql2\lib\base\connection.js:475:34)
+      at PacketParser.onPacket (D:\trae\my_rocket_global_app\backend\user-service\node_modules\mysql2\lib\base\connection.js:93:12)
+      at PacketParser.executeStart (D:\trae\my_rocket_global_app\backend\user-service\node_modules\mysql2\lib\packet_parser.js:75:16)
+      at Socket.<anonymous> (D:\trae\my_rocket_global_app\backend\user-service\node_modules\mysql2\lib\base\connection.js:100:25)
+      at Socket.emit (node:events:518:28)
+      at addChunk (node:internal/streams/readable:561:12)
+      at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+      at Readable.push (node:internal/streams/readable:392:5) {
+    code: 'ER_BAD_DB_ERROR',
+    errno: 1049,
+    sqlState: '42000',
+    sqlMessage: "Unknown database 'rocket_training_system'",
+    sql: undefined
+  },
+  level: 'error',
+  message: "unhandledRejection: Unknown database 'rocket_training_system'\n" +
+    "Error: Unknown database 'rocket_training_system'\n" +
+    '    at Packet.asError (D:\\trae\\my_rocket_global_app\\backend\\user-service\\node_modules\\mysql2\\lib\\packets\\packet.js:740:17)\n' +
+    '    at ClientHandshake.execute (D:\\trae\\my_rocket_global_app\\backend\\user-service\\node_modules\\mysql2\\lib\\commands\\command.js:29:26)\n' +
+    '    at PoolConnection.handlePacket (D:\\trae\\my_rocket_global_app\\backend\\user-service\\node_modules\\mysql2\\lib\\base\\connection.js:475:34)\n' +
+    '    at PacketParser.onPacket (D:\\trae\\my_rocket_global_app\\backend\\user-service\\node_modules\\mysql2\\lib\\base\\connection.js:93:12)\n' +
+    '    at PacketParser.executeStart (D:\\trae\\my_rocket_global_app\\backend\\user-service\\node_modules\\mysql2\\lib\\packet_parser.js:75:16)\n' +
+    '    at Socket.<anonymous> (D:\\trae\\my_rocket_global_app\\backend\\user-service\\node_modules\\mysql2\\lib\\base\\connection.js:100:25)\n' +
+    '    at Socket.emit (node:events:518:28)\n' +
+    '    at addChunk (node:internal/streams/readable:561:12)\n' +
+    '    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n' +
+    '    at Readable.push (node:internal/streams/readable:392:5)',
+  stack: "Error: Unknown database 'rocket_training_system'\n" +
+    '    at Packet.asError (D:\\trae\\my_rocket_global_app\\backend\\user-service\\node_modules\\mysql2\\lib\\packets\\packet.js:740:17)\n' +
+    '    at ClientHandshake.execute (D:\\trae\\my_rocket_global_app\\backend\\user-service\\node_modules\\mysql2\\lib\\commands\\command.js:29:26)\n' +
+    '    at PoolConnection.handlePacket (D:\\trae\\my_rocket_global_app\\backend\\user-service\\node_modules\\mysql2\\lib\\base\\connection.js:475:34)\n' +
+    '    at PacketParser.onPacket (D:\\trae\\my_rocket_global_app\\backend\\user-service\\node_modules\\mysql2\\lib\\base\\connection.js:93:12)\n' +
+    '    at PacketParser.executeStart (D:\\trae\\my_rocket_global_app\\backend\\user-service\\node_modules\\mysql2\\lib\\packet_parser.js:75:16)\n' +
+    '    at Socket.<anonymous> (D:\\trae\\my_rocket_global_app\\backend\\user-service\\node_modules\\mysql2\\lib\\base\\connection.js:100:25)\n' +
+    '    at Socket.emit (node:events:518:28)\n' +
+    '    at addChunk (node:internal/streams/readable:561:12)\n' +
+    '    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)\n' +
+    '    at Readable.push (node:internal/streams/readable:392:5)',
+  rejection: true,
+  date: 'Fri Aug 08 2025 11:15:59 GMT+0700 (Indochina Time)',
+  process: {
+    pid: 25992,
+    uid: null,
+    gid: null,
+    cwd: 'D:\\trae\\my_rocket_global_app\\backend\\user-service',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v22.17.1',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'D:\\trae\\my_rocket_global_app\\backend\\user-service\\index.js'
+    ],
+    memoryUsage: {
+      rss: 71659520,
+      heapTotal: 32419840,
+      heapUsed: 19132496,
+      external: 2298238,
+      arrayBuffers: 18923
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 876098.218 },
+  trace: [
+    {
+      column: 17,
+      file: 'D:\\trae\\my_rocket_global_app\\backend\\user-service\\node_modules\\mysql2\\lib\\packets\\packet.js',
+      function: 'Packet.asError',
+      line: 740,
+      method: 'asError',
+      native: false
+    },
+    {
+      column: 26,
+      file: 'D:\\trae\\my_rocket_global_app\\backend\\user-service\\node_modules\\mysql2\\lib\\commands\\command.js',
+      function: 'ClientHandshake.execute',
+      line: 29,
+      method: 'execute',
+      native: false
+    },
+    {
+      column: 34,
+      file: 'D:\\trae\\my_rocket_global_app\\backend\\user-service\\node_modules\\mysql2\\lib\\base\\connection.js',
+      function: 'PoolConnection.handlePacket',
+      line: 475,
+      method: 'handlePacket',
+      native: false
+    },
+    {
+      column: 12,
+      file: 'D:\\trae\\my_rocket_global_app\\backend\\user-service\\node_modules\\mysql2\\lib\\base\\connection.js',
+      function: 'PacketParser.onPacket',
+      line: 93,
+      method: 'onPacket',
+      native: false
+    },
+    {
+      column: 16,
+      file: 'D:\\trae\\my_rocket_global_app\\backend\\user-service\\node_modules\\mysql2\\lib\\packet_parser.js',
+      function: 'PacketParser.executeStart',
+      line: 75,
+      method: 'executeStart',
+      native: false
+    },
+    {
+      column: 25,
+      file: 'D:\\trae\\my_rocket_global_app\\backend\\user-service\\node_modules\\mysql2\\lib\\base\\connection.js',
+      function: null,
+      line: 100,
+      method: null,
+      native: false
+    },
+    {
+      column: 28,
+      file: 'node:events',
+      function: 'Socket.emit',
+      line: 518,
+      method: 'emit',
+      native: false
+    },
+    {
+      column: 12,
+      file: 'node:internal/streams/readable',
+      function: 'addChunk',
+      line: 561,
+      method: null,
+      native: false
+    },
+    {
+      column: 3,
+      file: 'node:internal/streams/readable',
+      function: 'readableAddChunkPushByteMode',
+      line: 512,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'node:internal/streams/readable',
+      function: 'Readable.push',
+      line: 392,
+      method: 'push',
+      native: false
+    }
+  ],
+  service: 'user-service',
+  timestamp: '2025-08-08 11:15:59'
+}

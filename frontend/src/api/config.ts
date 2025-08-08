@@ -3,11 +3,12 @@ import { store } from '../app/store';
 import { clearCredentials } from '../store/slices/authSlice';
 
 // API Base URLs
-export const API_ENDPOINTS = {
-  AUTH_SERVICE: process.env.REACT_APP_AUTH_SERVICE_URL || 'http://localhost:3001',
-  USER_SERVICE: process.env.REACT_APP_USER_SERVICE_URL || 'http://localhost:3002',
-  COURSE_SERVICE: process.env.REACT_APP_COURSE_SERVICE_URL || 'http://localhost:3003',
-  AI_SERVICE: process.env.REACT_APP_AI_SERVICE_URL || 'http://localhost:8000',
+const API_ENDPOINTS = {
+  AUTH: process.env.REACT_APP_AUTH_SERVICE_URL || 'http://localhost:3001',
+  USER: process.env.REACT_APP_USER_SERVICE_URL || 'http://localhost:3001',
+  COURSE: process.env.REACT_APP_COURSE_SERVICE_URL || 'http://localhost:3001',
+  AI: process.env.REACT_APP_AI_SERVICE_URL || 'http://localhost:3001',
+  MAIN: process.env.REACT_APP_MAIN_SERVICE_URL || 'http://localhost:3001',
 };
 
 // Create axios instance
@@ -65,10 +66,11 @@ const createApiInstance = (baseURL: string): AxiosInstance => {
 };
 
 // Create API instances for different services
-export const authApi = createApiInstance(API_ENDPOINTS.AUTH_SERVICE);
-export const userApi = createApiInstance(API_ENDPOINTS.USER_SERVICE);
-export const courseApi = createApiInstance(API_ENDPOINTS.COURSE_SERVICE);
-export const aiApi = createApiInstance(API_ENDPOINTS.AI_SERVICE);
+export const authApi = createApiInstance(API_ENDPOINTS.AUTH);
+export const userApi = createApiInstance(API_ENDPOINTS.USER);
+export const courseApi = createApiInstance(API_ENDPOINTS.COURSE);
+export const aiApi = createApiInstance(API_ENDPOINTS.AI);
+export const mainApi = createApiInstance(API_ENDPOINTS.MAIN);
 
 // Generic API response interface
 export interface ApiResponse<T = any> {

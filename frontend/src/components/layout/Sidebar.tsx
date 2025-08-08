@@ -41,6 +41,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, currentUser }) => {
       icon: '👤',
       label: 'Hồ sơ',
       description: 'Thông tin cá nhân'
+    },
+    {
+      path: '/api-test',
+      icon: '🔧',
+      label: 'API Test',
+      description: 'Kiểm tra kết nối API'
     }
   ];
 
