@@ -118,7 +118,7 @@ app.post('/api/auth/register', async (req, res) => {
 
 // Students endpoints
 app.get('/api/students', async (req, res) => {
-  // Mock students data
+  // Mock students data with more students for testing
   res.json({
     success: true,
     data: [
@@ -136,6 +136,30 @@ app.get('/api/students', async (req, res) => {
         email: 'student2@example.com',
         skills: ['Python', 'Django', 'PostgreSQL'],
         experience: 'Intermediate',
+        status: 'active'
+      },
+      {
+        id: 3,
+        fullName: 'Lê Văn C',
+        email: 'student3@example.com',
+        skills: ['Java', 'Spring Boot', 'MySQL'],
+        experience: 'Advanced',
+        status: 'active'
+      },
+      {
+        id: 4,
+        fullName: 'Phạm Thị D',
+        email: 'student4@example.com',
+        skills: ['React', 'TypeScript', 'GraphQL'],
+        experience: 'Intermediate',
+        status: 'active'
+      },
+      {
+        id: 5,
+        fullName: 'Hoàng Văn E',
+        email: 'student5@example.com',
+        skills: ['Vue.js', 'Nuxt.js', 'MongoDB'],
+        experience: 'Beginner',
         status: 'active'
       }
     ]

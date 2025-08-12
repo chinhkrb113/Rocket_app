@@ -4,6 +4,7 @@ import Layout from '../components/layout/Layout';
 import Button from '../components/common/Button';
 import Input from '../components/common/Input';
 import { mockStudents, type Student, User, mockTeams, mockTasks, mockEvaluations, mockStudentProfiles, mockExtendedStudents, mockEnterpriseInterests } from '../data/mockData';
+import { enterpriseService, CreateProjectRequest } from '../api/enterpriseService';
 import './EnterprisePage.css';
 
 interface EnterprisePageProps {
@@ -53,6 +54,30 @@ const EnterprisePage: React.FC<EnterprisePageProps> = ({ currentUser }) => {
   const [showCreateProjectModal, setShowCreateProjectModal] = useState(false);
   const [newProgram, setNewProgram] = useState<Partial<TrainingProgram>>({});
   const [newProject, setNewProject] = useState<Partial<ProjectAssignment>>({});
+  const [students, setStudents] = useState<any[]>([]);
+  const [loadingStudents, setLoadingStudents] = useState(false);
+
+  // Load students from API
+  useEffect(() => {
+    const loadStudents = async () => {
+      setLoadingStudents(true);
+      try {
+        const response = await fetch('http://localhost:3001/api/students');
+        if (response.ok) {
+          const result = await response.json();
+          setStudents(result.data || []);
+        } else {
+          console.error('Failed to load students');
+        }
+      } catch (error) {
+        console.error('Error loading students:', error);
+      } finally {
+        setLoadingStudents(false);
+      }
+    };
+
+    loadStudents();
+  }, []);
 
   // Mock data for training programs and projects
   const [trainingPrograms, setTrainingPrograms] = useState<TrainingProgram[]>([
@@ -118,21 +143,16 @@ const EnterprisePage: React.FC<EnterprisePageProps> = ({ currentUser }) => {
   ]);
 
   // Filter students based on search and filters
-  const filteredStudents = mockExtendedStudents.filter(student => {
-    const profile = mockStudentProfiles.find(p => p.studentId === student.id);
-    if (!profile) return false;
-
+  const filteredStudents = students.filter(student => {
     const matchesSearch = student.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          student.email.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesSkill = !skillFilter || profile.technicalSkills.some(skill => 
-      skill.name.toLowerCase().includes(skillFilter.toLowerCase())
+    const matchesSkill = !skillFilter || student.skills.some((skill: string) => 
+      skill.toLowerCase().includes(skillFilter.toLowerCase())
     );
     
-    const matchesExperience = experienceFilter === 'all' || 
-      (experienceFilter === 'beginner' && profile.technicalSkills.some(skill => skill.level === 'beginner')) ||
-      (experienceFilter === 'intermediate' && profile.technicalSkills.some(skill => skill.level === 'intermediate')) ||
-      (experienceFilter === 'advanced' && profile.technicalSkills.some(skill => skill.level === 'advanced' || skill.level === 'expert'));
+    const matchesExperience = !experienceFilter || 
+      student.experience.toLowerCase() === experienceFilter.toLowerCase();
 
     return matchesSearch && matchesSkill && matchesExperience;
   });
@@ -171,23 +191,86 @@ const EnterprisePage: React.FC<EnterprisePageProps> = ({ currentUser }) => {
     }
   };
 
-  const handleCreateProject = () => {
+  const handleCreateProject = async () => {
     if (newProject.title && newProject.description && selectedStudents.length > 0) {
-      const project: ProjectAssignment = {
-        id: Date.now().toString(),
-        title: newProject.title,
-        description: newProject.description || '',
-        assignedStudents: [...selectedStudents],
-        startDate: newProject.startDate || new Date().toISOString().split('T')[0],
-        endDate: newProject.endDate || new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        status: 'planning',
-        progress: 0,
-        deliverables: newProject.deliverables || [],
-        budget: newProject.budget || 0,
-        priority: newProject.priority || 'medium'
-      };
+      try {
+        // Prepare data for API call
+        const projectData: CreateProjectRequest = {
+          title: newProject.title,
+          description: newProject.description,
+          skills: newProject.skills ? newProject.skills.split(',').map(s => s.trim()) : [],
+          budget: newProject.budget || 0,
+          deadline: newProject.endDate || new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          requirements: newProject.deliverables?.join(', ') || '',
+          experienceLevel: (newProject.experienceLevel as 'beginner' | 'intermediate' | 'advanced') || 'intermediate'
+        };
+
+        // Call API to create project with assigned staff
+         const response = await fetch('http://localhost:3001/api/enterprises/projects', {
+           method: 'POST',
+           headers: {
+             'Content-Type': 'application/json',
+           },
+           body: JSON.stringify({
+             ...projectData,
+             assignedStaff: selectedStudents.map(id => parseInt(id)),
+             createdBy: currentUser?.id || 1
+           })
+         });
+
+        if (response.ok) {
+          const result = await response.json();
+          console.log('Project created successfully:', result);
+          
+          // Send notifications to selected students
+          for (const studentId of selectedStudents) {
+            try {
+              await fetch('http://localhost:3001/api/notifications', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  userId: parseInt(studentId),
+                  title: 'Bạn được phân công vào dự án mới',
+                  message: `Bạn đã được phân công vào dự án "${newProject.title}". Vui lòng kiểm tra chi tiết và xác nhận tham gia.`,
+                  type: 'project_assignment',
+                  relatedEntityType: 'project',
+                  relatedEntityId: result.data?.id || result.id
+                })
+              });
+            } catch (notificationError) {
+              console.error('Failed to send notification to student:', studentId, notificationError);
+            }
+          }
+          
+          // Update local state with the created project
+          const project: ProjectAssignment = {
+            id: result.id?.toString() || Date.now().toString(),
+            title: newProject.title,
+            description: newProject.description || '',
+            assignedStudents: [...selectedStudents],
+            startDate: newProject.startDate || new Date().toISOString().split('T')[0],
+            endDate: newProject.endDate || new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            status: 'planning',
+            progress: 0,
+            deliverables: newProject.deliverables || [],
+            budget: newProject.budget || 0,
+            priority: newProject.priority || 'medium'
+          };
+          
+          setProjectAssignments(prev => [...prev, project]);
+          alert(`Dự án đã được tạo thành công! Đã gửi thông báo cho ${selectedStudents.length} học viên.`);
+        } else {
+          const error = await response.json();
+          console.error('Failed to create project:', error);
+          alert('Có lỗi xảy ra khi tạo dự án: ' + (error.message || 'Unknown error'));
+        }
+      } catch (error) {
+        console.error('Error creating project:', error);
+        alert('Có lỗi xảy ra khi tạo dự án. Vui lòng thử lại.');
+      }
       
-      setProjectAssignments(prev => [...prev, project]);
       setShowCreateProjectModal(false);
       setNewProject({});
       setSelectedStudents([]);
@@ -512,9 +595,9 @@ const EnterprisePage: React.FC<EnterprisePageProps> = ({ currentUser }) => {
                       <span className="insight-icon">🎯</span>
                       <span className="insight-text">
                         Tìm thấy {filteredStudents.filter(student => {
-                          const profile = mockStudentProfiles.find(p => p.studentId === student.id);
-                          return profile?.technicalSkills.some(skill => 
-                            newProject.skills?.toLowerCase().includes(skill.name.toLowerCase())
+                          if (!newProject.skills) return false;
+                          return student.skills?.some((skill: string) => 
+                            newProject.skills?.toLowerCase().includes(skill.toLowerCase())
                           );
                         }).length} ứng viên có kỹ năng phù hợp
                       </span>
@@ -592,17 +675,29 @@ const EnterprisePage: React.FC<EnterprisePageProps> = ({ currentUser }) => {
               {/* AI Recommended Candidates */}
                <div className="ai-candidates-section">
                  <h3>🎯 Ứng viên được AI gợi ý</h3>
+                 {loadingStudents ? (
+                   <div className="loading-message">Đang tải danh sách ứng viên...</div>
+                 ) : filteredStudents.length === 0 ? (
+                   <div className="no-candidates-message">
+                     <p>Không tìm thấy ứng viên phù hợp.</p>
+                     <p>Tổng số học viên: {students.length}</p>
+                     <p>Kỹ năng yêu cầu: {newProject.skills || 'Chưa nhập'}</p>
+                   </div>
+                 ) : (
                  <div className="candidates-grid">
                    {filteredStudents
                      .map(student => {
-                       const profile = mockStudentProfiles.find(p => p.studentId === student.id);
-                       const matchingSkills = profile?.technicalSkills.filter(skill => 
-                         newProject.skills?.toLowerCase().includes(skill.name.toLowerCase())
+                       if (!newProject.skills || !student.skills) {
+                         return { ...student, matchingSkills: [], matchScore: 0 };
+                       }
+                       const projectSkills = newProject.skills.split(',').map(s => s.trim().toLowerCase());
+                       const matchingSkills = student.skills.filter((skill: string) => 
+                         projectSkills.some(ps => ps.includes(skill.toLowerCase()) || skill.toLowerCase().includes(ps))
                        ) || [];
                        const matchScore = Math.round(
-                         (matchingSkills.length / (newProject.skills?.split(',').length || 1)) * 100
+                         (matchingSkills.length / projectSkills.length) * 100
                        );
-                       return { ...student, profile, matchingSkills, matchScore };
+                       return { ...student, matchingSkills, matchScore };
                      })
                      .sort((a, b) => b.matchScore - a.matchScore)
                      .map(student => {
@@ -622,10 +717,7 @@ const EnterprisePage: React.FC<EnterprisePageProps> = ({ currentUser }) => {
                                <h3>{student.fullName}</h3>
                                <p>{student.email}</p>
                                <span className="experience-level">
-                                 {student.profile?.technicalSkills && student.profile.technicalSkills.length > 0 
-                                   ? student.profile.technicalSkills[0].level.charAt(0).toUpperCase() + student.profile.technicalSkills[0].level.slice(1)
-                                   : 'Chưa xác định'
-                                 }
+                                 {student.experience || 'Chưa xác định'}
                                </span>
                              </div>
                              <div className="ai-score">
@@ -644,9 +736,9 @@ const EnterprisePage: React.FC<EnterprisePageProps> = ({ currentUser }) => {
                            <div className="matching-skills">
                              <h4>Kỹ năng phù hợp ({student.matchingSkills.length}):</h4>
                              <div className="skills-tags">
-                               {student.matchingSkills.map(skill => (
-                                 <span key={skill.name} className="skill-tag matching">
-                                   {skill.name} ({skill.level})
+                               {student.matchingSkills.map((skill: string) => (
+                                 <span key={skill} className="skill-tag matching">
+                                   {skill}
                                  </span>
                                ))}
                              </div>
@@ -655,12 +747,12 @@ const EnterprisePage: React.FC<EnterprisePageProps> = ({ currentUser }) => {
                            <div className="other-skills">
                              <h4>Kỹ năng khác:</h4>
                              <div className="skills-tags">
-                               {student.profile?.technicalSkills
-                                 .filter(skill => !student.matchingSkills.some(ms => ms.name === skill.name))
+                               {student.skills
+                                 .filter((skill: string) => !student.matchingSkills.includes(skill))
                                  .slice(0, 3)
-                                 .map(skill => (
-                                   <span key={skill.name} className="skill-tag">
-                                     {skill.name} ({skill.level})
+                                 .map((skill: string) => (
+                                   <span key={skill} className="skill-tag">
+                                     {skill}
                                    </span>
                                  ))}
                              </div>
@@ -668,12 +760,12 @@ const EnterprisePage: React.FC<EnterprisePageProps> = ({ currentUser }) => {
                            
                            <div className="candidate-stats">
                              <div className="stat">
-                               <span className="stat-label">Tiến độ:</span>
-                               <span className="stat-value">{student.progress}%</span>
+                               <span className="stat-label">Trạng thái:</span>
+                               <span className="stat-value">{student.status}</span>
                              </div>
                              <div className="stat">
-                               <span className="stat-label">Điểm:</span>
-                               <span className="stat-value">{student.grade}</span>
+                               <span className="stat-label">Kinh nghiệm:</span>
+                               <span className="stat-value">{student.experience}</span>
                              </div>
                              <div className="stat">
                                <span className="stat-label">AI Score:</span>
@@ -705,6 +797,7 @@ const EnterprisePage: React.FC<EnterprisePageProps> = ({ currentUser }) => {
                        );
                      })}
                  </div>
+                 )}
                </div>
              </div>
            )}
