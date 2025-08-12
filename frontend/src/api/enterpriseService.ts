@@ -9,11 +9,12 @@ export interface Project {
   description: string;
   skills: string[];
   budget: number;
-  deadline: string;
+  endDate: string;
   status: 'open' | 'in_progress' | 'completed' | 'cancelled';
   enterpriseId?: number;
   createdAt?: string;
   updatedAt?: string;
+  assignedStudentIds?: string[];
 }
 
 export interface CreateProjectRequest {
@@ -21,7 +22,7 @@ export interface CreateProjectRequest {
   description: string;
   skills: string[];
   budget: number;
-  deadline: string;
+  endDate: string;
   requirements?: string;
   experienceLevel: 'beginner' | 'intermediate' | 'advanced';
 }
@@ -31,7 +32,7 @@ export interface UpdateProjectRequest {
   description?: string;
   skills?: string[];
   budget?: number;
-  deadline?: string;
+  endDate?: string;
   status?: 'open' | 'in_progress' | 'completed' | 'cancelled';
 }
 
@@ -59,6 +60,18 @@ export interface ProjectApplication {
   appliedAt: string;
 }
 
+export interface CreateTaskRequest {
+  title: string;
+  description: string;
+  dueDate: string;
+  type: 'individual' | 'team' | 'project';
+  priority: 'low' | 'medium' | 'high';
+  assignedStudentIds: string[];
+  enterpriseId?: number; // Optional: If an admin/instructor can select an enterprise
+  createdBy?: number; // Optional: Logged in user's ID
+}
+
+
 // Enterprise Service API calls
 export const enterpriseService = {
   // Get all projects for current enterprise
@@ -73,9 +86,9 @@ export const enterpriseService = {
     return response.data;
   },
 
-  // Create new project
-  createProject: async (data: CreateProjectRequest): Promise<ApiResponse<Project>> => {
-    const response = await mainApi.post('/api/enterprises/projects', data);
+  // Create new project (task for students)
+  createProject: async (data: CreateTaskRequest): Promise<ApiResponse<Project>> => {
+    const response = await mainApi.post('/api/projects', data);
     return response.data;
   },
 

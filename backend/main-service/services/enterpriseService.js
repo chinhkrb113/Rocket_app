@@ -241,7 +241,7 @@ class EnterpriseService {
         p.budget,
         p.duration,
         p.required_skills,
-        p.assigned_staff,
+        p.assigned_student_ids,
         p.start_date,
         p.end_date,
         p.enterprise_id,
@@ -281,7 +281,7 @@ class EnterpriseService {
         budget: project.budget,
         duration: project.duration,
         requiredSkills: project.required_skills ? JSON.parse(project.required_skills) : [],
-        assignedStaff: project.assigned_staff ? JSON.parse(project.assigned_staff) : [],
+        assignedStudentIds: project.assigned_student_ids ? JSON.parse(project.assigned_student_ids) : [],
         startDate: project.start_date,
         endDate: project.end_date,
         enterpriseId: project.enterprise_id,
@@ -300,7 +300,7 @@ class EnterpriseService {
     };
   }
 
-  // Tạo dự án mới
+  // Create a new project and assign it to students
   async createProject(projectData) {
     const {
       enterpriseId,
@@ -309,68 +309,68 @@ class EnterpriseService {
       budget,
       duration,
       requiredSkills = [],
-      assignedStaff = [],
+      assignedStudentIds = [], // Changed from assignedStaff
       startDate,
       endDate,
       createdBy
     } = projectData;
 
-    const query = `
+    // Save the project details
+    const projectQuery = `
       INSERT INTO projects (
         enterprise_id, title, description, budget, duration, 
-        required_skills, assigned_staff, start_date, end_date, created_by
+        required_skills, assigned_student_ids, start_date, end_date, created_by
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
-    const result = await executeQuery(query, [
+    const projectResult = await executeQuery(projectQuery, [
       enterpriseId,
       title,
       description,
       budget,
       duration,
       JSON.stringify(requiredSkills),
-      JSON.stringify(assignedStaff),
+      JSON.stringify(assignedStudentIds), // Storing student IDs
       startDate || null,
       endDate || null,
       createdBy || null
     ]);
 
-    const projectId = result.insertId;
+    const projectId = projectResult.insertId;
 
-    // Tạo thông báo cho nhân viên được phân công
-    if (assignedStaff && assignedStaff.length > 0) {
+    // Notify assigned students and create assignment records
+    if (assignedStudentIds && assignedStudentIds.length > 0) {
       const notificationService = require('./notificationService');
       
-      for (const staffId of assignedStaff) {
-        // Lấy thông tin user_id từ staff_id
-        const staffQuery = `
-          SELECT s.user_id, u.full_name 
-          FROM staff s 
-          JOIN users u ON s.user_id = u.id 
-          WHERE s.id = ?
+      for (const studentId of assignedStudentIds) {
+        // Get user_id from student_id for notification
+        const studentUserQuery = `
+          SELECT user_id FROM students WHERE id = ?
         `;
-        const staffResult = await executeQuery(staffQuery, [staffId]);
+        const studentUserResult = await executeQuery(studentUserQuery, [studentId]);
         
-        if (staffResult.length > 0) {
-          const staffUser = staffResult[0];
+        if (studentUserResult.length > 0) {
+          const userId = studentUserResult[0].user_id;
+
+          // Create a notification for the student
           await notificationService.createProjectAssignmentNotification(
             projectId,
-            staffUser.user_id,
+            userId,
             title,
             createdBy || null
           );
           
-          // Tạo bản ghi trong project_assignments
+          // Create a record in the project_student_assignments table
           const assignmentQuery = `
-            INSERT INTO project_assignments (project_id, staff_id, assigned_by)
+            INSERT INTO project_student_assignments (project_id, student_id, assigned_by)
             VALUES (?, ?, ?)
           `;
-          await executeQuery(assignmentQuery, [projectId, staffId, createdBy || null]);
+          await executeQuery(assignmentQuery, [projectId, studentId, createdBy || null]);
         }
       }
     }
 
-    // Trả về thông tin dự án vừa tạo
+    // Return the newly created project details
     const createdProject = await this.getProjectById(projectId);
     return createdProject;
   }
@@ -386,7 +386,7 @@ class EnterpriseService {
         p.budget,
         p.duration,
         p.required_skills,
-        p.assigned_staff,
+        p.assigned_student_ids,
         p.start_date,
         p.end_date,
         p.enterprise_id,
@@ -416,7 +416,7 @@ class EnterpriseService {
       budget: project.budget,
       duration: project.duration,
       requiredSkills: project.required_skills ? JSON.parse(project.required_skills) : [],
-      assignedStaff: project.assigned_staff ? JSON.parse(project.assigned_staff) : [],
+      assignedStudentIds: project.assigned_student_ids ? JSON.parse(project.assigned_student_ids) : [],
       startDate: project.start_date,
       endDate: project.end_date,
       enterpriseId: project.enterprise_id,

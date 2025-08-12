@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { mockTasks, mockExtendedStudents, type User } from '../../data/mockData';
+import { enterpriseService, CreateTaskRequest } from '../../api/enterpriseService';
 import { type Task, type TaskSubmission, type ExtendedStudent } from '../../types/student';
 import './TaskManagement.css';
 
@@ -26,6 +27,14 @@ const TaskManagement: React.FC<TaskManagementProps> = ({
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showSubmissionModal, setShowSubmissionModal] = useState(false);
   const [submissionContent, setSubmissionContent] = useState('');
+  const [newTask, setNewTask] = useState<CreateTaskRequest>({
+    title: '',
+    description: '',
+    dueDate: '',
+    type: 'project',
+    priority: 'medium',
+    assignedStudentIds: [],
+  });
 
   useEffect(() => {
     setTasks(propTasks || mockTasks);
@@ -148,6 +157,55 @@ const TaskManagement: React.FC<TaskManagementProps> = ({
     setSubmissionContent('');
     setShowSubmissionModal(false);
     setSelectedTask(null);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setNewTask(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleStudentSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedIds = Array.from(e.target.selectedOptions, option => option.value);
+    setNewTask(prev => ({ ...prev, assignedStudentIds: selectedIds }));
+  };
+
+  const handleCreateTask = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTask.title || !newTask.description || !newTask.dueDate || newTask.assignedStudentIds.length === 0) {
+      alert('Please fill all required fields.');
+      return;
+    }
+
+    try {
+      const createdProject = await enterpriseService.createProject(newTask);
+      const newProject = createdProject.data;
+
+      const taskToAdd: Task = {
+        id: newProject.id.toString(),
+        title: newProject.title,
+        description: newProject.description,
+        status: 'pending',
+        dueDate: newProject.endDate,
+        assignedTo: newProject.assignedStudentIds || [],
+        type: newTask.type,
+        priority: newTask.priority,
+        submissions: []
+      };
+
+      setTasks(prev => [...prev, taskToAdd]);
+      setShowCreateModal(false);
+      setNewTask({
+        title: '',
+        description: '',
+        dueDate: '',
+        type: 'project',
+        priority: 'medium',
+        assignedStudentIds: [],
+      });
+    } catch (error) {
+      console.error('Failed to create task', error);
+      alert('Failed to create task. Please check the console for details.');
+    }
   };
 
   const getTaskStats = () => {
@@ -488,21 +546,21 @@ const TaskManagement: React.FC<TaskManagementProps> = ({
             </div>
             
             <div className="modal-body">
-              <form className="create-task-form">
+              <form className="create-task-form" onSubmit={handleCreateTask}>
                 <div className="form-group">
                   <label>Tiêu đề task:</label>
-                  <input type="text" placeholder="Nhập tiêu đề task" />
+                  <input type="text" name="title" value={newTask.title} onChange={handleInputChange} placeholder="Nhập tiêu đề task" required />
                 </div>
                 
                 <div className="form-group">
                   <label>Mô tả:</label>
-                  <textarea placeholder="Mô tả chi tiết về task" rows={4} />
+                  <textarea name="description" value={newTask.description} onChange={handleInputChange} placeholder="Mô tả chi tiết về task" rows={4} required />
                 </div>
                 
                 <div className="form-row">
                   <div className="form-group">
                     <label>Loại task:</label>
-                    <select>
+                    <select name="type" value={newTask.type} onChange={handleInputChange}>
                       <option value="individual">Cá nhân</option>
                       <option value="team">Nhóm</option>
                       <option value="project">Dự án</option>
@@ -511,7 +569,7 @@ const TaskManagement: React.FC<TaskManagementProps> = ({
                   
                   <div className="form-group">
                     <label>Độ ưu tiên:</label>
-                    <select>
+                    <select name="priority" value={newTask.priority} onChange={handleInputChange}>
                       <option value="low">Thấp</option>
                       <option value="medium">Trung bình</option>
                       <option value="high">Cao</option>
@@ -521,15 +579,15 @@ const TaskManagement: React.FC<TaskManagementProps> = ({
                 
                 <div className="form-group">
                   <label>Hạn nộp:</label>
-                  <input type="date" />
+                  <input type="date" name="dueDate" value={newTask.dueDate} onChange={handleInputChange} required />
                 </div>
                 
                 <div className="form-group">
                   <label>Giao cho:</label>
-                  <select multiple>
-                    <option value="student-001">Nguyễn Thị Học Viên</option>
-                    <option value="student-002">Trần Văn Sinh Viên</option>
-                    <option value="team-001">Team: React Warriors</option>
+                  <select multiple value={newTask.assignedStudentIds} onChange={handleStudentSelection} required>
+                    {propStudents?.map(student => (
+                      <option key={student.id} value={student.id}>{student.name}</option>
+                    ))}
                   </select>
                 </div>
                 

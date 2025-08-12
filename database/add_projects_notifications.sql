@@ -11,7 +11,7 @@ CREATE TABLE projects (
     budget DECIMAL(12,2),
     duration VARCHAR(100),
     required_skills JSON,
-    assigned_staff JSON, -- Danh sách ID nhân viên được assign
+    assigned_student_ids JSON, -- Store assigned student IDs as a JSON array
     start_date DATE,
     end_date DATE,
     created_by INT,
@@ -48,23 +48,22 @@ CREATE TABLE notifications (
 );
 
 -- Bảng project_assignments: Phân công nhân viên vào dự án
-CREATE TABLE project_assignments (
+-- Bảng project_student_assignments: Phân công học viên vào dự án
+CREATE TABLE project_student_assignments (
     id INT PRIMARY KEY AUTO_INCREMENT,
     project_id INT NOT NULL,
-    staff_id INT NOT NULL,
-    role VARCHAR(100), -- 'developer', 'designer', 'project_manager', etc.
+    student_id INT NOT NULL,
+    role VARCHAR(100), -- e.g., 'developer', 'designer'
     assigned_by INT,
     assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status ENUM('assigned', 'accepted', 'declined', 'completed') DEFAULT 'assigned',
+    status ENUM('assigned', 'in_progress', 'completed', 'withdrawn') DEFAULT 'assigned',
     
     FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
-    FOREIGN KEY (staff_id) REFERENCES staff(id) ON DELETE CASCADE,
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
     FOREIGN KEY (assigned_by) REFERENCES users(id),
-    UNIQUE KEY unique_project_staff (project_id, staff_id),
+    UNIQUE KEY unique_project_student (project_id, student_id),
     INDEX idx_project_id (project_id),
-    INDEX idx_staff_id (staff_id),
-    INDEX idx_assigned_by (assigned_by),
-    INDEX idx_status (status)
+    INDEX idx_student_id (student_id)
 );
 
 COMMIT;
